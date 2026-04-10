@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Studio — Graphic Design & Branding</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0d0d0d;
+    --surface: #161616;
+    --surface2: #1e1e1e;
+    --accent: #e8d5b0;
+    --accent2: #c9a96e;
+    --white: #f5f2ee;
+    --muted: #6b6b6b;
+    --line: rgba(255,255,255,0.08);
+    --font-display: 'Bebas Neue', sans-serif;
+    --font-serif: 'Playfair Display', serif;
+    --font-body: 'DM Sans', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: var(--font-body);
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* CUSTOM CURSOR */
+  .cursor {
+    position: fixed;
+    width: 10px; height: 10px;
+    background: var(--accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.15s ease, width 0.2s ease, height 0.2s ease, background 0.2s ease;
+    transform: translate(-50%, -50%);
+  }
+  .cursor-ring {
+    position: fixed;
+    width: 36px; height: 36px;
+    border: 1px solid rgba(232,213,176,0.4);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transition: transform 0.06s linear, width 0.2s ease, height 0.2s ease;
+    transform: translate(-50%, -50%);
+  }
+  .cursor.hover { width: 6px; height: 6px; background: var(--accent2); }
+  .cursor-ring.hover { width: 52px; height: 52px; border-color: rgba(232,213,176,0.6); }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 48px;
+    mix-blend-mode: normal;
+  }
+  nav::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(13,13,13,0.9) 0%, transparent 100%);
+    pointer-events: none;
+  }
+  .nav-logo {
+    font-family: var(--font-display);
+    font-size: 22px;
+    letter-spacing: 0.12em;
+    color: var(--white);
+    text-decoration: none;
+    position: relative;
+    z-index: 1;
+  }
+  .nav-links {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+    position: relative;
+    z-index: 1;
+  }
+  .nav-links a {
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(245,242,238,0.6);
+    text-decoration: none;
+    transition: color 0.3s;
+    position: relative;
+  }
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -3px; left: 0;
+    width: 0; height: 1px;
+    background: var(--accent);
+    transition: width 0.3s ease;
+  }
+  .nav-links a:hover { color: var(--white); }
+  .nav-links a:hover::after { width: 100%; }
+
+  /* SECTIONS */
+  section { min-height: 100vh; position: relative; }
+
+  /* PAGE TRANSITIONS */
+  .page-section {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1);
+  }
+  .page-section.visible { opacity: 1; transform: translateY(0); }
+
+  /* ======================== HERO ======================== */
+  #hero {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 48px 80px;
+    overflow: hidden;
+    background: var(--bg);
+  }
+
+  .hero-bg-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: var(--font-display);
+    font-size: clamp(180px, 22vw, 340px);
+    letter-spacing: -0.02em;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255,255,255,0.04);
+    white-space: nowrap;
+    pointer-events: none;
+    user-select: none;
+    animation: drift 20s ease-in-out infinite alternate;
+  }
+  @keyframes drift {
+    from { transform: translate(-50%, -50%) translateX(-20px); }
+    to   { transform: translate(-50%, -50%) translateX(20px); }
+  }
+
+  .hero-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+    font-weight: 400;
+    animation: fadeUp 1s 0.2s both;
+  }
+
+  .hero-headline {
+    font-family: var(--font-serif);
+    font-size: clamp(52px, 7vw, 110px);
+    font-weight: 700;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    animation: fadeUp 1s 0.4s both;
+  }
+  .hero-headline em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .hero-sub-row {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-top: 40px;
+    animation: fadeUp 1s 0.6s both;
+  }
+  .hero-desc {
+    max-width: 380px;
+    font-size: 15px;
+    line-height: 1.75;
+    color: rgba(245,242,238,0.55);
+    font-weight: 300;
+  }
+  .hero-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--white);
+    text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 16px 28px;
+    transition: border-color 0.3s, background 0.3s;
+  }
+  .hero-cta:hover {
+    border-color: var(--accent);
+    background: rgba(232,213,176,0.06);
+  }
+  .hero-cta .arrow {
+    display: inline-block;
+    transition: transform 0.3s;
+  }
+  .hero-cta:hover .arrow { transform: translateX(6px); }
+
+  .hero-scroll-hint {
+    position: absolute;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    animation: fadeUp 1s 1s both;
+  }
+  .scroll-line {
+    width: 1px;
+    height: 48px;
+    background: linear-gradient(to bottom, var(--accent), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+  @keyframes scrollPulse {
+    0%,100% { opacity: 0.3; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(1.2); }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ======================== MARQUEE ======================== */
+  .marquee-strip {
+    background: var(--accent);
+    padding: 14px 0;
+    overflow: hidden;
+    position: relative;
+  }
+  .marquee-track {
+    display: flex;
+    gap: 0;
+    animation: marquee 18s linear infinite;
+    white-space: nowrap;
+  }
+  .marquee-item {
+    font-family: var(--font-display);
+    font-size: 13px;
+    letter-spacing: 0.2em;
+    color: var(--bg);
+    padding: 0 32px;
+    flex-shrink: 0;
+  }
+  .marquee-dot {
+    font-size: 6px;
+    vertical-align: middle;
+    color: var(--bg);
+    opacity: 0.5;
+  }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
+  /* ======================== ABOUT ======================== */
+  #about {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    min-height: 90vh;
+    padding: 120px 48px;
+    gap: 80px;
+    border-top: 1px solid var(--line);
+  }
+  .about-left { }
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-weight: 400;
+  }
+  .section-label::before {
+    content: '';
+    width: 30px;
+    height: 1px;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+  .about-headline {
+    font-family: var(--font-serif);
+    font-size: clamp(36px, 4vw, 58px);
+    font-weight: 400;
+    line-height: 1.15;
+    margin-bottom: 32px;
+  }
+  .about-headline strong {
+    font-weight: 700;
+    font-style: italic;
+    color: var(--accent);
+  }
+  .about-body {
+    font-size: 15px;
+    line-height: 1.85;
+    color: rgba(245,242,238,0.55);
+    max-width: 440px;
+  }
+
+  .about-right {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+  .stat-block {
+    padding: 36px 0;
+    border-top: 1px solid var(--line);
+    display: flex;
+    align-items: baseline;
+    gap: 20px;
+  }
+  .stat-num {
+    font-family: var(--font-display);
+    font-size: 72px;
+    color: var(--accent);
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  .stat-label {
+    font-size: 13px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    line-height: 1.6;
+  }
+
+  /* ======================== SERVICES ======================== */
+  #services {
+    padding: 120px 48px;
+    border-top: 1px solid var(--line);
+  }
+  .services-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 80px;
+  }
+  .services-title {
+    font-family: var(--font-display);
+    font-size: clamp(64px, 9vw, 140px);
+    letter-spacing: 0.02em;
+    line-height: 0.9;
+    color: var(--white);
+  }
+  .services-title span { color: var(--accent); }
+  .services-intro {
+    max-width: 300px;
+    font-size: 14px;
+    line-height: 1.8;
+    color: var(--muted);
+  }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1px;
+    background: var(--line);
+  }
+  .service-card {
+    background: var(--bg);
+    padding: 56px 48px;
+    display: grid;
+    grid-template-columns: 80px 1fr auto;
+    align-items: start;
+    gap: 40px;
+    transition: background 0.4s;
+    position: relative;
+    overflow: hidden;
+  }
+  .service-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 0; height: 2px;
+    background: var(--accent);
+    transition: width 0.5s cubic-bezier(0.16,1,0.3,1);
+  }
+  .service-card:hover { background: var(--surface); }
+  .service-card:hover::after { width: 100%; }
+
+  .service-num {
+    font-family: var(--font-display);
+    font-size: 48px;
+    color: rgba(255,255,255,0.08);
+    line-height: 1;
+    transition: color 0.3s;
+    padding-top: 4px;
+  }
+  .service-card:hover .service-num { color: var(--accent); opacity: 0.5; }
+
+  .service-body { }
+  .service-name {
+    font-family: var(--font-serif);
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    line-height: 1.2;
+  }
+  .service-desc {
+    font-size: 14px;
+    line-height: 1.8;
+    color: var(--muted);
+    max-width: 480px;
+  }
+  .service-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 24px;
+  }
+  .tag {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    border: 1px solid rgba(201,169,110,0.3);
+    padding: 5px 12px;
+  }
+  .service-arrow {
+    font-size: 28px;
+    color: rgba(255,255,255,0.1);
+    transition: color 0.3s, transform 0.3s;
+    padding-top: 4px;
+    font-weight: 300;
+    font-family: var(--font-body);
+  }
+  .service-card:hover .service-arrow {
+    color: var(--accent);
+    transform: translate(4px, -4px);
+  }
+
+  /* ======================== PROCESS ======================== */
+  #process {
+    padding: 120px 48px;
+    border-top: 1px solid var(--line);
+    background: var(--surface);
+  }
+  .process-header { margin-bottom: 80px; }
+  .process-title {
+    font-family: var(--font-serif);
+    font-size: clamp(40px, 5vw, 72px);
+    font-weight: 400;
+    line-height: 1.1;
+    margin-top: 20px;
+  }
+  .process-title em { font-style: italic; color: var(--accent); }
+
+  .process-steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+    background: var(--line);
+  }
+  .process-step {
+    background: var(--surface);
+    padding: 48px 36px;
+    position: relative;
+    transition: background 0.3s;
+  }
+  .process-step:hover { background: var(--surface2); }
+  .step-num {
+    font-family: var(--font-display);
+    font-size: 80px;
+    color: rgba(232,213,176,0.1);
+    line-height: 1;
+    margin-bottom: 24px;
+    display: block;
+    transition: color 0.3s;
+  }
+  .process-step:hover .step-num { color: rgba(232,213,176,0.25); }
+  .step-title {
+    font-family: var(--font-serif);
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .step-desc {
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--muted);
+  }
+
+  /* ======================== PHILOSOPHY ======================== */
+  #philosophy {
+    padding: 140px 48px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    flex-direction: column;
+  }
+  .philosophy-quote {
+    font-family: var(--font-serif);
+    font-size: clamp(28px, 4.5vw, 64px);
+    font-weight: 400;
+    line-height: 1.3;
+    max-width: 900px;
+    color: var(--white);
+  }
+  .philosophy-quote em { font-style: italic; color: var(--accent); }
+  .philosophy-attr {
+    margin-top: 40px;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* ======================== CONTACT ======================== */
+  #contact {
+    padding: 120px 48px 80px;
+    border-top: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+  .contact-left { }
+  .contact-headline {
+    font-family: var(--font-display);
+    font-size: clamp(64px, 8vw, 120px);
+    line-height: 0.9;
+    letter-spacing: 0.02em;
+    margin-top: 20px;
+  }
+  .contact-headline span { color: var(--accent); }
+
+  .contact-form { padding-top: 20px; }
+  .form-group { margin-bottom: 32px; }
+  .form-label {
+    display: block;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .form-input, .form-select, .form-textarea {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+    color: var(--white);
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-weight: 300;
+    padding: 12px 0;
+    outline: none;
+    transition: border-color 0.3s;
+    appearance: none;
+  }
+  .form-input:focus, .form-select:focus, .form-textarea:focus {
+    border-color: var(--accent);
+  }
+  .form-select option { background: #1a1a1a; }
+  .form-textarea { resize: none; height: 80px; }
+  .form-submit {
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--accent);
+    color: var(--bg);
+    border: none;
+    padding: 18px 36px;
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    cursor: none;
+    transition: background 0.3s, transform 0.2s;
+  }
+  .form-submit:hover { background: var(--accent2); transform: translateX(4px); }
+
+  /* ======================== FOOTER ======================== */
+  footer {
+    padding: 40px 48px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .footer-logo {
+    font-family: var(--font-display);
+    font-size: 18px;
+    letter-spacing: 0.12em;
+    color: var(--white);
+  }
+  .footer-copy {
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+
+  /* ======================== TYPOGRAPHY ACCENTS ======================== */
+  .type-outline {
+    font-family: var(--font-display);
+    font-size: clamp(60px, 8vw, 110px);
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255,255,255,0.12);
+    letter-spacing: 0.05em;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    nav { padding: 20px 24px; }
+    .nav-links { display: none; }
+    #hero { padding: 0 24px 60px; }
+    #about { grid-template-columns: 1fr; padding: 80px 24px; gap: 48px; }
+    #services { padding: 80px 24px; }
+    .services-header { flex-direction: column; align-items: flex-start; gap: 24px; }
+    .service-card { grid-template-columns: 60px 1fr; padding: 36px 24px; }
+    .service-arrow { display: none; }
+    .process-steps { grid-template-columns: 1fr 1fr; }
+    #philosophy { padding: 80px 24px; }
+    #contact { grid-template-columns: 1fr; padding: 80px 24px; gap: 48px; }
+    footer { padding: 32px 24px; flex-direction: column; gap: 12px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="nav-logo">FORM&nbsp;&amp;&nbsp;FIELD</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg-text">DESIGN</div>
+
+  <p class="hero-eyebrow">Graphic Design &amp; Brand Identity</p>
+
+  <h1 class="hero-headline">
+    Shape<br>
+    the way<br>
+    brands <em>speak.</em>
+  </h1>
+
+  <div class="hero-sub-row">
+    <p class="hero-desc">
+      We build visual identities that don't just look good — they communicate who you are before you say a word.
+    </p>
+    <a href="#services" class="hero-cta">
+      Explore Services <span class="arrow">→</span>
+    </a>
+  </div>
+
+  <div class="hero-scroll-hint">
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-strip">
+  <div class="marquee-track" id="marqueeTrack"></div>
+</div>
+
+<!-- ABOUT -->
+<section id="about" class="page-section">
+  <div class="about-left">
+    <div class="section-label">Who We Are</div>
+    <h2 class="about-headline">
+      Design is a<br>
+      <strong>language.</strong><br>
+      We make yours<br>
+      <strong>fluent.</strong>
+    </h2>
+    <p class="about-body">
+      Form & Field is a boutique graphic design studio specializing in brand identity, logo design, and visual collateral. We partner with companies at every stage — from startups building a brand for the first time, to established businesses ready for a reinvention. Every project is treated as its own world.
+    </p>
+  </div>
+  <div class="about-right">
+    <div class="stat-block">
+      <div class="stat-num">01</div>
+      <div class="stat-label">Studio dedicated entirely<br>to your brand's visual voice</div>
+    </div>
+    <div class="stat-block">
+      <div class="stat-num">3</div>
+      <div class="stat-label">Core disciplines —<br>Branding, Logos &amp; Collateral</div>
+    </div>
+    <div class="stat-block">
+      <div class="stat-num">∞</div>
+      <div class="stat-label">Revisions until it feels<br>exactly right</div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="services-header page-section">
+    <div>
+      <div class="section-label">What We Do</div>
+      <h2 class="services-title">OUR<br><span>WORK</span></h2>
+    </div>
+    <p class="services-intro">
+      Three core disciplines. Each one essential to building a brand that holds together across every touchpoint.
+    </p>
+  </div>
+
+  <div class="services-grid">
+    <div class="service-card page-section">
+      <div class="service-num">01</div>
+      <div class="service-body">
+        <h3 class="service-name">Brand Identity</h3>
+        <p class="service-desc">
+          Your brand is more than a logo — it's a system of values, voice, and visuals working in harmony. We build complete brand identities from the ground up, or breathe new life into existing ones through thoughtful redesigns. Every deliverable comes with a comprehensive brand guide so your identity stays consistent everywhere it lives.
+        </p>
+        <div class="service-tags">
+          <span class="tag">Brand Strategy</span>
+          <span class="tag">Brand Guides</span>
+          <span class="tag">New Brands</span>
+          <span class="tag">Redesigns</span>
+          <span class="tag">Color Systems</span>
+          <span class="tag">Typography</span>
+        </div>
+      </div>
+      <div class="service-arrow">↗</div>
+    </div>
+
+    <div class="service-card page-section">
+      <div class="service-num">02</div>
+      <div class="service-body">
+        <h3 class="service-name">Logo Design</h3>
+        <p class="service-desc">
+          A great logo is deceptively simple. It distills everything a brand stands for into a single mark. We design logos from scratch, recreate existing marks in professional vector format, and refine logos that are close — but not quite there yet. You'll walk away with a versatile logo system ready for any application.
+        </p>
+        <div class="service-tags">
+          <span class="tag">Custom Logos</span>
+          <span class="tag">Recreation</span>
+          <span class="tag">Refinement</span>
+          <span class="tag">Logo Systems</span>
+          <span class="tag">Variations</span>
+        </div>
+      </div>
+      <div class="service-arrow">↗</div>
+    </div>
+
+    <div class="service-card page-section">
+      <div class="service-num">03</div>
+      <div class="service-body">
+        <h3 class="service-name">Brand Collateral</h3>
+        <p class="service-desc">
+          Identity doesn't stop at the logo. Business cards, brochures, social templates, presentations, packaging, signage — every piece of collateral is an opportunity to reinforce who you are. We design cohesive collateral for brands we build, and produce new materials that slot seamlessly into established brand systems.
+        </p>
+        <div class="service-tags">
+          <span class="tag">Print</span>
+          <span class="tag">Digital</span>
+          <span class="tag">Social Templates</span>
+          <span class="tag">Stationery</span>
+          <span class="tag">Presentations</span>
+          <span class="tag">Packaging</span>
+        </div>
+      </div>
+      <div class="service-arrow">↗</div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="process">
+  <div class="process-header page-section">
+    <div class="section-label">How We Work</div>
+    <h2 class="process-title">
+      The <em>process</em><br>
+      behind the work.
+    </h2>
+  </div>
+
+  <div class="process-steps">
+    <div class="process-step page-section">
+      <span class="step-num">01</span>
+      <h3 class="step-title">Discover</h3>
+      <p class="step-desc">We start by listening. Deep dive into your business, audience, competitors, and ambitions. The best design solutions are built on real understanding.</p>
+    </div>
+    <div class="process-step page-section">
+      <span class="step-num">02</span>
+      <h3 class="step-title">Explore</h3>
+      <p class="step-desc">Multiple creative directions are developed and presented. We explore different visual territories before converging on the one that fits best.</p>
+    </div>
+    <div class="process-step page-section">
+      <span class="step-num">03</span>
+      <h3 class="step-title">Refine</h3>
+      <p class="step-desc">The chosen direction is developed in detail. Typography, color, form, and application are tested and refined until every element is exactly right.</p>
+    </div>
+    <div class="process-step page-section">
+      <span class="step-num">04</span>
+      <h3 class="step-title">Deliver</h3>
+      <p class="step-desc">Clean, organized files in every format you need. Brand guides that make implementation easy. Ongoing support as your brand grows and evolves.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PHILOSOPHY -->
+<section id="philosophy" class="page-section">
+  <blockquote class="philosophy-quote">
+    "Good design doesn't call attention to itself.<br>It simply <em>clears the way</em> for what you're trying to say."
+  </blockquote>
+  <p class="philosophy-attr">— The Form &amp; Field Studio Philosophy</p>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-left page-section">
+    <div class="section-label">Get In Touch</div>
+    <h2 class="contact-headline">
+      LET'S<br>
+      <span>BUILD</span><br>
+      SOMETHING.
+    </h2>
+    <p style="margin-top: 40px; font-size: 14px; line-height: 1.8; color: var(--muted); max-width: 320px;">
+      Tell us about your project. We'll get back to you within 48 hours with thoughts on how we can help.
+    </p>
+  </div>
+
+  <div class="contact-form page-section">
+    <div class="form-group">
+      <label class="form-label">Your Name</label>
+      <input type="text" class="form-input" placeholder="Full name">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Email Address</label>
+      <input type="email" class="form-input" placeholder="hello@yourcompany.com">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Company / Brand</label>
+      <input type="text" class="form-input" placeholder="Company name (if applicable)">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Service Needed</label>
+      <select class="form-select">
+        <option value="" disabled selected>Select a service</option>
+        <option>Brand Identity — New Brand</option>
+        <option>Brand Identity — Redesign</option>
+        <option>Logo Design — New Logo</option>
+        <option>Logo Design — Recreation / Refinement</option>
+        <option>Brand Collateral</option>
+        <option>Full Brand Package</option>
+        <option>Not sure yet</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Tell Us More</label>
+      <textarea class="form-textarea" placeholder="Brief description of your project, timeline, and budget..."></textarea>
+    </div>
+    <button class="form-submit">
+      Send Message <span>→</span>
+    </button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">FORM&nbsp;&amp;&nbsp;FIELD</div>
+  <p class="footer-copy">© 2025 Form & Field Studio. All rights reserved.</p>
+</footer>
+
+<script>
+  // Cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top = my + 'px';
+  });
+  function animRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animRing);
+  }
+  animRing();
+  document.querySelectorAll('a, button, .service-card, input, select, textarea').forEach(el => {
+    el.addEventListener('mouseenter', () => { cursor.classList.add('hover'); ring.classList.add('hover'); });
+    el.addEventListener('mouseleave', () => { cursor.classList.remove('hover'); ring.classList.remove('hover'); });
+  });
+
+  // Marquee
+  const items = ['Branding','Logo Design','Brand Identity','Collateral','Visual Systems','Brand Guides','Typography','Design Strategy'];
+  const track = document.getElementById('marqueeTrack');
+  const doubled = [...items, ...items, ...items, ...items];
+  track.innerHTML = doubled.map((t,i) =>
+    `<span class="marquee-item">${t}</span>${i < doubled.length-1 ? '<span class="marquee-item marquee-dot">◆</span>' : ''}`
+  ).join('');
+
+  // Scroll reveal
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.page-section').forEach(el => observer.observe(el));
+
+  // Stagger children within grids
+  document.querySelectorAll('.process-steps .process-step, .services-grid .service-card').forEach((el, i) => {
+    el.style.transitionDelay = (i * 0.1) + 's';
+  });
+</script>
+</body>
+</html>
